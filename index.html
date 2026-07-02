@@ -1,1 +1,352 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Em busca da cidade perdida</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Variáveis de Cores para o Tema de Aventura */
+        :root {
+            --cor-fundo-escuro: #091a13;
+            --cor-fundo-claro: #143224;
+            --cor-primaria: #2e7d32;
+            --cor-primaria-hover: #388e3c;
+            --cor-destaque: #ffd54f;
+            --cor-destaque-hover: #ffca28;
+            --cor-texto: #e8f5e9;
+            --cor-card: rgba(18, 48, 35, 0.85);
+            --borda-raio: 16px;
+        }
+
+        /* Reset e Configurações Gerais */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Bai Jamjuree', sans-serif;
+            background: linear-gradient(135deg, var(--cor-fundo-escuro) 0%, var(--cor-fundo-claro) 100%);
+            color: var(--cor-texto);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Container Principal do Jogo */
+        main {
+            width: 100%;
+            max-width: 700px;
+            background-color: var(--cor-card);
+            border: 2px solid rgba(255, 213, 79, 0.2);
+            border-radius: var(--borda-raio);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 
+                        inset 0 0 20px rgba(46, 125, 50, 0.2);
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        /* Estrutura dos Passos (Cenários) */
+        .passo {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        .passo.ativo {
+            display: flex;
+        }
+
+        /* Animação de transição suave */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Estilização das Imagens/SVG Ilustrativos */
+        .cenario-img {
+            width: 100%;
+            height: 250px;
+            border-radius: calc(var(--borda-raio) - 4px);
+            object-fit: cover;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            background-color: #0d251a;
+        }
+
+        /* Textos da Narrativa */
+        p {
+            font-size: 1.15rem;
+            line-height: 1.7;
+            text-align: justify;
+            color: #d1ebd4;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Estilização dos Botões de Decisão */
+        .btn-proximo {
+            font-family: 'Bai Jamjuree', sans-serif;
+            background: linear-gradient(135deg, var(--cor-primaria) 0%, #1b5e20 100%);
+            color: var(--cor-texto);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .btn-proximo:hover {
+            background: linear-gradient(135deg, var(--cor-primaria-hover) 0%, var(--cor-primaria) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(46, 125, 50, 0.3);
+            border-color: var(--cor-destaque);
+        }
+
+        .btn-proximo:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Destaque para decisões finais/importantes */
+        .passo[id="passo-11"] .btn-proximo,
+        .passo[id="passo-4"] .btn-proximo {
+            background: linear-gradient(135deg, var(--cor-destaque) 0%, #f57f17 100%);
+            color: #1b5e20;
+        }
+
+        .passo[id="passo-11"] .btn-proximo:hover,
+        .passo[id="passo-4"] .btn-proximo:hover {
+            background: linear-gradient(135deg, var(--cor-destaque-hover) 0%, var(--cor-destaque) 100%);
+            box-shadow: 0 6px 12px rgba(255, 213, 79, 0.3);
+        }
+
+        /* Responsividade para Telas Menores */
+        @media (max-width: 600px) {
+            main {
+                padding: 20px;
+            }
+            
+            .cenario-img {
+                height: 180px;
+            }
+
+            p {
+                font-size: 1rem;
+            }
+
+            .btn-proximo {
+                padding: 12px 16px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <!-- PASSO 0: Introdução -->
+        <div class="passo ativo" id="passo-0">
+            <!-- Ilustração de Biblioteca / Mapa Antigo -->
+            <svg class="cenario-img" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100%" height="100%" fill="#1a120b"/>
+                <path d="M 100,50 L 700,50 L 680,250 L 120,250 Z" fill="#e8d3b9" stroke="#8a5a36" stroke-width="8"/>
+                <path d="M 150,80 C 200,70 300,90 400,80 C 500,70 600,90 650,80" fill="none" stroke="#5c3a21" stroke-width="2" stroke-dasharray="5,5"/>
+                <circle cx="200" cy="150" r="15" fill="none" stroke="#d32f2f" stroke-width="4"/>
+                <path d="M 200,165 L 200,185 M 185,150 L 165,150" stroke="#d32f2f" stroke-width="4"/>
+                <path d="M 600,200 L 620,220 M 620,200 L 600,220" stroke="#d32f2f" stroke-width="5"/>
+                <text x="350" y="160" font-family="'Bai Jamjuree', sans-serif" font-size="24" fill="#5c3a21" font-weight="bold" text-anchor="middle">O MAPA SECRETO</text>
+            </svg>
+            <p>Um dia desses, dentro de um livro da biblioteca da escola, eu descobri uma carta antiga sobre uma cidade perdida, escondida por riquezas e belezas naturais. Nessa carta, a autora deixa algumas pistas para encontrar essa cidade e eu decidi segui-las!</p>
+            <button class="btn-proximo" data-proximo="1">Rio Grande do Sul</button>
+            <button class="btn-proximo" data-proximo="2">Pernambuco</button>
+        </div>
+
+        <!-- PASSO 1: Rio Grande do Sul -->
+        <div class="passo" id="passo-1">
+            <!-- Ilustração de Montanha / Pico do Tijuca -->
+            <svg class="cenario-img" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100%" height="100%" fill="#112233"/>
+                <circle cx="400" cy="180" r="120" fill="#ff7675" opacity="0.6"/>
+                <polygon points="100,300 300,100 500,300" fill="#2d3436"/>
+                <polygon points="350,300 550,80 750,300" fill="#1e272e"/>
+                <polygon points="250,150 300,100 350,150" fill="#ffffff" opacity="0.9"/>
+                <polygon points="500,125 550,80 600,125" fill="#ffffff" opacity="0.9"/>
+            </svg>
+            <p>Você começa sua jornada no Rio de Janeiro, subindo o Pico da Tijuca ao amanhecer para encontrar a primeira pista.</p>
+            <button class="btn-proximo" data-proximo="3">Procurar a pista no topo do pico</button>
+            <button class="btn-proximo" data-proximo="4">Desistir e voltar para casa</button>
+        </div>
+
+        <!-- PASSO 2: Pernambuco -->
+        <div class="passo" id="passo-2">
+            <!-- Ilustração de Igrejas Históricas / Olinda -->
+            <svg class="cenario-img" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100%" height="100%" fill="#74b9ff"/>
+                <circle cx="700" cy="80" r="50" fill="#ffeaa7"/>
+                <rect x="250" y="100" width="300" height="200" fill="#dfe6e9" stroke="#b2bec3" stroke-width="4"/>
+                <polygon points="200,100 400,20 600,100" fill="#d63031"/>
+                <rect x="360" y="180" width="80" height="120" fill="#6c5ce7"/>
+                <circle cx="400" cy="220" r="10" fill="#ffeaa7"/>
+                <rect x="300" y="120" width="60" height="40" fill="#81ecec"/>
+                <rect x="440" y="120" width="60" height="40" fill="#81ecec"/>
+            </svg>
+            <p>Em Pernambuco, você visita a histórica cidade de Olinda. Na carta, uma das pistas indica que para localizar a entrada para a cidade perdida você deve procurar a próxima pista em um dos pontos turísticos da cidade. Por qual você começa?</p>
+            <button class="btn-proximo" data-proximo="5">Investigar as igrejas antigas</button>
+            <button class="btn-proximo" data-proximo="6">Explorar as praias próximas</button>
+        </div>
+
+        <!-- PASSO 3: Inscrição no Pico -->
+        <div class="passo" id="passo-3">
+            <p>No topo do Pico da Tijuca, você encontra uma antiga inscrição apontando que a próxima pista está localizada no Amazonas.</p>
+            <button class="btn-proximo" data-proximo="7">Seguir para o Amazonas</button>
+        </div>
+
+        <!-- PASSO 4: Desistência (Fim de Jogo) -->
+        <div class="passo" id="passo-4">
+            <!-- Ilustração Voltando para Casa -->
+            <svg class="cenario-img" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100%" height="100%" fill="#2c3e50"/>
+                <rect x="300" y="120" width="200" height="180" fill="#34495e"/>
+                <polygon points="250,120 400,30 550,120" fill="#e74c3c"/>
+                <rect x="375" y="200" width="50" height="100" fill="#f1c40f"/>
+                <circle cx="415" cy="250" r="5" fill="#2c3e50"/>
+                <!-- Ícone de Tristeza / Dúvida -->
+                <circle cx="400" cy="-20" r="15" fill="none" stroke="#fff" stroke-width="3" transform="translate(0, 100)"/>
+                <path d="M 390,95 Q 400,85 410,95" fill="none" stroke="#fff" stroke-width="3"/>
+            </svg>
+            <p>Você decide que a aventura é grande demais e volta para casa, mas sempre se pergunta o que teria encontrado.</p>
+            <button class="btn-proximo" data-proximo="0">Recomeçar Aventura</button>
+        </div>
+
+        <!-- PASSO 5: Igrejas de Olinda -->
+        <div class="passo" id="passo-5">
+            <p>Nas igrejas de Olinda, você descobre um mapa antigo escondido atrás de um altar, apontando que a próxima pista está no Amazonas.</p>
+            <button class="btn-proximo" data-proximo="7">Viajar para o Amazonas</button>
+        </div>
+
+        <!-- PASSO 6: Praias de Olinda -->
+        <div class="passo" id="passo-6">
+            <p>Explorando as praias, você encontra uma caverna escondida, mas ela leva a um beco sem saída.</p>
+            <button class="btn-proximo" data-proximo="8">Voltar e explorar as igrejas</button>
+        </div>
+
+        <!-- PASSO 7: Floresta Amazônica -->
+        <div class="passo" id="passo-7">
+            <!-- Ilustração de Rio e Árvores -->
+            <svg class="cenario-img" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100%" height="100%" fill="#0a3d24"/>
+                <path d="M 400,300 L 350,150 L 450,150 Z" fill="#201205"/>
+                <!-- Folhagem -->
+                <circle cx="350" cy="120" r="70" fill="#00b894"/>
+                <circle cx="450" cy="120" r="70" fill="#00b894"/>
+                <circle cx="400" cy="80" r="80" fill="#55efc4"/>
+                <!-- Rios bifurcados -->
+                <path d="M 400,300 Q 300,240 200,200 Q 100,180 50,220" fill="none" stroke="#74b9ff" stroke-width="20" stroke-linecap="round"/>
+                <path d="M 400,300 Q 500,240 600,200 Q 700,180 750,220" fill="none" stroke="#74b9ff" stroke-width="20" stroke-linecap="round"/>
+            </svg>
+            <p>No Amazonas, a busca pela cidade perdida se intensifica. Você se depara com um rio bifurcado.</p>
+            <button class="btn-proximo" data-proximo="9">Seguir pelo rio à esquerda</button>
+            <button class="btn-proximo" data-proximo="10">Seguir pelo rio à direita</button>
+        </div>
+
+        <!-- PASSO 8: Retorno às Igrejas -->
+        <div class="passo" id="passo-8">
+            <p>De volta às igrejas, você finalmente encontra o mapa antigo. Agora, rumo ao Amazonas!</p>
+            <button class="btn-proximo" data-proximo="7">Seguir para o Amazonas</button>
+        </div>
+
+        <!-- PASSO 9: Cachoeira Escondida -->
+        <div class="passo" id="passo-9">
+            <p>O rio à esquerda leva você a uma cachoeira escondida com inscrições antigas que revelam a entrada da cidade perdida.</p>
+            <button class="btn-proximo" data-proximo="11">Explorar a cidade perdida</button>
+        </div>
+
+        <!-- PASSO 10: Área Pantanosa -->
+        <div class="passo" id="passo-10">
+            <p>O rio à direita termina em uma área pantanosa. Apesar de belas vistas, não há sinais da cidade perdida aqui.</p>
+            <button class="btn-proximo" data-proximo="12">Retornar e tentar o outro rio</button>
+        </div>
+
+        <!-- PASSO 11: Vitória (Cidade Perdida) -->
+        <div class="passo" id="passo-11">
+            <!-- Ilustração da Cidade Perdida Incrível -->
+            <svg class="cenario-img" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100%" height="100%" fill="#0d2040"/>
+                <!-- Céu Estrelado -->
+                <circle cx="100" cy="50" r="2" fill="#fff"/><circle cx="250" cy="30" r="1.5" fill="#fff"/>
+                <circle cx="550" cy="60" r="2" fill="#fff"/><circle cx="700" cy="40" r="1" fill="#fff"/>
+                <circle cx="400" cy="80" r="60" fill="#fcf3cf"/>
+                <!-- Pirâmides da Cidade Dourada -->
+                <polygon points="100,300 250,150 400,300" fill="#f39c12"/>
+                <polygon points="250,300 450,100 650,300" fill="#d35400"/>
+                <polygon points="500,300 600,180 700,300" fill="#e67e22"/>
+                <!-- Detalhes de Brilho -->
+                <polygon points="400,100 450,100 425,50" fill="#f1c40f" opacity="0.8"/>
+            </svg>
+            <p>Dentro da cidade perdida, você descobre tesouros inimagináveis e decide se dedicar a estudar e preservar este lugar de valor inestimável!</p>
+            <button class="btn-proximo" data-proximo="0">Jogar Novamente</button>
+        </div>
+
+        <!-- PASSO 12: Rio correto após retorno -->
+        <div class="passo" id="passo-12">
+            <p>Retornando e escolhendo o rio à esquerda, você finalmente encontra a cachoeira escondida e as inscrições que levam à cidade perdida.</p>
+            <button class="btn-proximo" data-proximo="11">Explorar a cidade perdida</button>
+        </div>
+    </main>
+
+    <script>
+        // Executa após o carregamento completo do documento HTML
+        document.addEventListener('DOMContentLoaded', () => {
+            const botoesProximo = document.querySelectorAll('.btn-proximo');
+            const passos = document.querySelectorAll('.passo');
+
+            botoesProximo.forEach(botao => {
+                botao.addEventListener('click', function() {
+                    // Obtém o ID do próximo passo a ser exibido
+                    const proximoPassoId = 'passo-' + this.getAttribute('data-proximo');
+                    
+                    // Procura o passo ativo atual para desativá-lo
+                    const passoAtivo = document.querySelector('.passo.ativo');
+                    if (passoAtivo) {
+                        passoAtivo.classList.remove('ativo');
+                    }
+
+                    // Encontra o novo passo correspondente e o ativa
+                    const proximoPasso = document.getElementById(proximoPassoId);
+                    if (proximoPasso) {
+                        proximoPasso.classList.add('ativo');
+                        // Garante que o usuário veja o topo do card no mobile
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
 
